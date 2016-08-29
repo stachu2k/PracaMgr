@@ -1,0 +1,76 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+<!-- Home Page -->
+<div data-role="page" id="home">
+
+    {% include "app/include/header.html" %}
+
+    <div data-role="main" class="ui-content">
+        Home
+    </div>
+
+    {% include "app/include/footer.html" %}
+
+</div>
+<!-- End of Home Page -->
+
+<!-- Student's Index Page -->
+<div data-role="page" id="students">
+
+    {% include "app/include/header.html" %}
+    <div data-role="main" class="ui-content" id="students-main"></div>
+    {% include "app/include/footer.html" %}
+
+</div>
+<!-- End of Student's Index Page -->
+
+<!-- Student's Details Page -->
+<div data-role="page" id="student-details">
+
+    {% include "app/include/header.html" %}
+
+    <div data-role="main" class="ui-content" id="student-details-main"></div>
+
+    {% include "app/include/footer.html" %}
+
+</div>
+<!-- End of Student's Details Page -->
+
+<!-- Student's Creating Dialog Page -->
+<div data-role="page" data-dialog="true" id="new-student">
+
+    <div data-role="header">
+        <h1>Dodaj studenta</h1>
+    </div>
+
+    <div data-role="main" class="ui-content" id="new-student-main">
+        <div id="result-box"></div>
+        <form action="" method="post" id="new-student-form">
+            {% csrf_token %}
+            <div class="ui-field-contain">
+                <label for="id_name">Imię:</label>
+                <input id="id_name" name="name" type="text">
+            </div>
+            <div class="ui-field-contain">
+                <label for="id_surname">Nazwisko:</label>
+                <input id="id_surname" name="surname" type="text">
+            </div>
+            <input type="submit" value="Dodaj">
+        </form>
+    </div>
+
+    <script>
+        $(function(){
+            $('#new-student-form').on("submit", function(event){
+                $('#result-box').html("");
+                event.preventDefault();
+                console.log("form submitted!");
+                newStudentFormPost();
+            });
+        });
+    </script>
+
+</div>
+<!-- End of Student's Creating Dialog Page -->
+{% endblock content %}

@@ -1,0 +1,57 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div data-role="page" id="students">
+
+    {% include "app/include/header.html" %}
+
+    <div data-role="main" class="ui-content">
+        <a href="#students_new" class="ui-btn ui-icon-plus ui-btn-icon-right">Dodaj studenta</a>
+        {% if students %}
+        <ul data-role="listview" data-inset="true">
+            {% for student in students %}
+            <li><a href="#">{{ student.surname }} {{ student.name }}</a></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="no-students-infobox">Brak studentów w bazie.</div>
+        {% endif %}
+    </div>
+
+    {% include "app/include/footer.html" %}
+
+</div>
+
+<div data-role="page" data-dialog="true" id="students_new">
+
+    <div data-role="header">
+        <h1>Dodaj studenta</h1>
+    </div>
+
+    <div data-role="main" class="ui-content">
+        <div id="result_box"></div>
+        <form action="{% url 'ajax_create_student' %}" method="post" id="id_students_form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="ui-field-contain">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input id="{{ field.id_for_label }}" name="{{ field.html_name }}" type="text">
+            </div>
+            {% endfor %}
+            <input type="submit" value="Dodaj">
+        </form>
+    </div>
+
+    <script>
+        $(function(){
+            $('#id_students_form').on("submit", function(event){
+                $('#result_box').html("");
+                event.preventDefault();
+                console.log("form submitted!");
+                ajax_post_form();
+            });
+        });
+    </script>
+
+</div>
+{% endblock content %}
