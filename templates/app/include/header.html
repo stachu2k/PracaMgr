@@ -1,5 +1,5 @@
 <div data-role="header">
     <h1>{{ title }}</h1>
-    <a href="{% url 'logout' %}" class="ui-btn ui-corner-all ui-shadow ui-icon-back ui-btn-icon-notext">Wyloguj</a>
+    <a href="{% url 'logout' %}" class="ui-btn ui-corner-all ui-shadow ui-icon-back ui-btn-icon-notext" data-ajax="false">Wyloguj</a>
     {% include "app/include/navbar.html" %}
 </div>
