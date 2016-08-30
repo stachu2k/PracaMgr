@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -34,6 +34,9 @@ def students(request):
             json.dumps(response),
             content_type="application/json"
         )
+
+    else:
+        raise Http404()
 
 
 def create_student(request):
@@ -71,4 +74,22 @@ def create_student(request):
         #
         #     return response
 
-    return redirect('home')
+    else:
+        raise Http404()
+
+
+def student_details(request):
+
+    if request.is_ajax():
+        student = Student.objects.get(pk = request.GET['id'])
+        response = {}
+        response['name'] = student.name
+        response['surname'] = student.surname
+
+        return HttpResponse(
+            json.dumps(response),
+            content_type="application/json"
+        )
+
+    else:
+        raise Http404()
