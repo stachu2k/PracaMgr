@@ -11,7 +11,7 @@ $(document).on("pageshow", "#students", function(){
             $('#students-main').html('<div class="loading"><img src="/static/images/ajax-loader.gif" alt="Loading..." ></div>');
         },
         success : function(students) {
-            var btn = '<a href="#new-student" class="ui-btn ui-icon-plus ui-btn-icon-right">Dodaj studenta</a>';
+            var btn = '<a href="#new-student" class="ui-btn ui-icon-plus ui-btn-icon-right ui-corner-all ui-shadow ui-mini">Dodaj studenta</a>';
             $('#students-main').append(btn).trigger("create");
 
             var form = $('<form></form>').addClass("ui-filterable");
@@ -37,12 +37,22 @@ $(document).on("pageshow", "#students", function(){
     });
 });
 
+$(document).on("pageshow", "#new-semester", function(){
+    $('#new-student-form').on("submit", function(event){
+        $('#std-result-box').html("");
+        event.preventDefault();
+        console.log("form submitted!");
+        newStudentFormPost();
+    });
+});
+
+
 $(document).on("pagehide", "#students", function(){
     $('#students-main *').remove();
 });
 
 $(document).on("pagehide", "#new-student", function(){
-    $('#result-box').html("");
+    $('#std-result-box').html("");
 });
 
 function getStudent() {
@@ -80,12 +90,12 @@ function newStudentFormPost(){
             $('#id_surname').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
             console.log("success"); // another sanity check
-            if(json.error == true) $('#result-box').css("color", "red");
-            else $('#result-box').css("color", "#47a447");
-            $('#result-box').html(json.result);
+            if(json.error == true) $('#std-result-box').css("color", "red");
+            else $('#std-result-box').css("color", "#47a447");
+            $('#std-result-box').html(json.result);
         },
         error : function(xhr,errmsg,err) {
-            $('#results-box').html("Error: " + errmsg); // add the error to the dom
+            $('#std-result-box').html("Error: " + errmsg); // add the error to the dom
             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
     });
