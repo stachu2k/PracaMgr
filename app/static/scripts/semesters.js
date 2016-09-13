@@ -30,12 +30,15 @@ $(document).on("pageshow", "#semesters", function(){
                 for (i in semesters) {
                     if (semesters[i].active) {
                         var li = $('<li></li>');
-                        var a = $('<a data-id="' + semesters[i].id + '" href="">' +
-                            '<h2>' + semesters[i].name + '</h2>' +
+                        var a = $('<a href="#">' +
+                            '<h4>' + semesters[i].name + '</h4>' +
                             '<p>Od: ' + semesters[i].start_date + ' | ' +
                             'Do: ' + semesters[i].end_date + '</p>' +
                             '</a>');
-                        a.on("click", getStudent);
+                        a.on("click", getSemesterProperties);
+                        ul.append(li.append(a));
+
+                        a = $('<a data-id="' + semesters[i].id + '" href="#" data-icon="check">Opcje</a>');
                         ul.append(li.append(a));
                     }
                 }
@@ -53,12 +56,17 @@ $(document).on("pageshow", "#semesters", function(){
                 for (i in semesters) {
                     if (!semesters[i].active) {
                         li = $('<li></li>');
-                        a = $('<a data-id="' + semesters[i].id + '" href="">' +
+                        a = $('<a href="#">' +
                             '<h2>' + semesters[i].name + '</h2>' +
                             '<p>Od: ' + semesters[i].start_date + ' | ' +
                             'Do: ' + semesters[i].end_date + '</p>' +
                             '</a>');
-                        a.on("click", getStudent);
+
+                        ul.append(li.append(a));
+
+                        a = $('<a data-id="' + semesters[i].id +
+                            '" href="#sem-properties" data-transition="pop" data-icon="gear">Opcje</a>');
+                        a.on("click", getSemesterProperties)
                         ul.append(li.append(a));
                     }
                 }
@@ -83,12 +91,12 @@ $(document).on("pagehide", "#semesters", function(){
     $('#semesters-main *').remove();
 });
 
-$(document).on("pageshow", "#new-semester", function(){
+$(document).ready(function(){
     $('#new-semester-form').on("submit", function(event){
         $('#sem-result-box').html("");
         event.preventDefault();
         console.log("form submitted!");
-        newSemesterFormPost();
+        addNewSemester();
     });
 });
 
@@ -96,8 +104,38 @@ $(document).on("pagehide", "#new-semester", function(){
     $('#sem-result-box').html("");
 });
 
-function newSemesterFormPost(){
-    console.log("newSemesterFormPost is working!") // sanity check
+$(document).on("pagehide", "#sem-properties", function() {
+    $('#sem-properties-main *').remove();
+});
+
+function getSemesterProperties() {
+    var semesterId = $(this).attr("data-id");
+
+    $.ajax({
+        url : "/semesters/properties/",
+        type : "GET",
+        data : {id : semesterId},
+        beforeSend : function(){
+            $('#sem-properties-main').html('<div class="loading">' +
+                '<img src="/static/images/ajax-loader.gif" alt="Loading..." ></div>');
+        },
+        success : function(semester) {
+            var h2 = $('<h2>' + semester.name + '</h2>');
+            var a = $('<a href="#" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini" data-rel="back">Aktywuj</a>');
+            var a2 = $('<a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Usuń</a>');
+            $('#sem-properties-main').append(h2).append(a).append(a2).trigger("create");
+        },
+        error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        },
+        complete : function(){
+            $('#sem-properties-main .loading').remove();
+        }
+    });
+}
+
+function addNewSemester() {
+    console.log("addNewSemester is working!") // sanity check
 
     var sem_type;
 

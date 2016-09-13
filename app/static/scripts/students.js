@@ -8,22 +8,32 @@ $(document).on("pageshow", "#students", function(){
         url : "/students/",
         type : "GET",
         beforeSend : function(){
-            $('#students-main').html('<div class="loading"><img src="/static/images/ajax-loader.gif" alt="Loading..." ></div>');
+            $('#students-main').html('<div class="loading">' +
+                '<img src="/static/images/ajax-loader.gif" alt="Loading..." ></div>');
         },
         success : function(students) {
-            var btn = '<a href="#new-student" class="ui-btn ui-icon-plus ui-btn-icon-right ui-corner-all ui-shadow ui-mini">Dodaj studenta</a>';
+            var btn = '<a href="#new-student"' +
+                'class="ui-btn ui-icon-plus ui-btn-icon-right ui-corner-all ui-shadow ui-mini">' +
+                'Dodaj studenta</a>';
             $('#students-main').append(btn).trigger("create");
 
             var form = $('<form></form>').addClass("ui-filterable");
             var input = $('<input>').attr({"id":"filter", "data-type":"search"});
             $('#students-main').append(form.append(input)).trigger("create");
 
-            var ul = $('<ul></ul>').attr({"data-role":"listview", "data-inset":"true", "data-autodividers":"true", "data-filter":"true", "data-input":"#filter"});
+            var ul = $('<ul></ul>').attr({
+                "data-role":"listview",
+                "data-inset":"true",
+                "data-autodividers":"true",
+                "data-filter":"true",
+                "data-input":"#filter"
+            });
             for(i in students)
             {
                 var li = $('<li></li>');
-                var a = $('<a data-id="' + students[i].id + '" href="#student-details">' + students[i].surname + " " + students[i].name + '</a>');
-                a.on("click", getStudent);
+                var a = $('<a data-id="' + students[i].id + '" href="#student-details">' +
+                    students[i].surname + " " + students[i].name + '</a>');
+                a.on("click", getStudentDetails);
                 ul.append(li.append(a));
             }
             $('#students-main').append(ul).trigger("create");
@@ -37,15 +47,14 @@ $(document).on("pageshow", "#students", function(){
     });
 });
 
-$(document).on("pageshow", "#new-semester", function(){
+$(document).ready(function(){
     $('#new-student-form').on("submit", function(event){
         $('#std-result-box').html("");
         event.preventDefault();
         console.log("form submitted!");
-        newStudentFormPost();
+        addNewStudent();
     });
 });
-
 
 $(document).on("pagehide", "#students", function(){
     $('#students-main *').remove();
@@ -55,31 +64,7 @@ $(document).on("pagehide", "#new-student", function(){
     $('#std-result-box').html("");
 });
 
-function getStudent() {
-
-   var studentId = $(this).attr("data-id");
-
-   $.ajax({
-        url : "/students/details/",
-        type : "GET",
-        data : {id : studentId},
-        beforeSend : function(){
-            $('#student-details-main').html('<div class="loading"><img src="/static/images/ajax-loader.gif" alt="Loading..." ></div>');
-        },
-        success : function(student) {
-            var h2 = $('<h2>' + student.name + ' ' + student.surname + '</h2>');
-            $('#student-details-main').append(h2).trigger("create");
-        },
-       error : function(xhr,errmsg,err) {
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        },
-        complete : function(){
-            $('#student-details-main .loading').remove();
-        }
-    });
-}
-
-function newStudentFormPost(){
+function addNewStudent(){
     console.log("newStudentFormPost is working!") // sanity check
     $.ajax({
         url : "/students/create/",
@@ -97,6 +82,31 @@ function newStudentFormPost(){
         error : function(xhr,errmsg,err) {
             $('#std-result-box').html("Error: " + errmsg); // add the error to the dom
             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+}
+
+function getStudentDetails() {
+
+   var studentId = $(this).attr("data-id");
+
+   $.ajax({
+        url : "/students/details/",
+        type : "GET",
+        data : {id : studentId},
+        beforeSend : function(){
+            $('#student-details-main').html('<div class="loading">' +
+                '<img src="/static/images/ajax-loader.gif" alt="Loading..." ></div>');
+        },
+        success : function(student) {
+            var h2 = $('<h2>' + student.name + ' ' + student.surname + '</h2>');
+            $('#student-details-main').append(h2).trigger("create");
+        },
+       error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        },
+        complete : function(){
+            $('#student-details-main .loading').remove();
         }
     });
 }

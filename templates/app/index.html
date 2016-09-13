@@ -1,7 +1,9 @@
 ﻿{% extends "app/layout.html" %}
 
 {% block content %}
+
 <!-- Home Page -->
+
 <div data-role="page" id="home">
 
     {% include "app/include/header.html" %}
@@ -14,19 +16,21 @@
     {% include "app/include/footer.html" %}
 
 </div>
-<!-- End of Home Page -->
+
+<!-- / Home Page -->
 
 <!-- Semester's Index Page -->
-<div data-role="page" id="semesters">
 
+<div data-role="page" id="semesters">
     {% include "app/include/header.html" %}
     <div data-role="main" class="ui-content" id="semesters-main"></div>
     {% include "app/include/footer.html" %}
-
 </div>
-<!-- End of Semester's Index Page -->
+
+<!-- / Semester's Index Page -->
 
 <!-- Semester's Creating Dialog Page -->
+
 <div data-role="page" data-dialog="true" id="new-semester">
 
     <div data-role="header">
@@ -63,31 +67,44 @@
     </div>
 
 </div>
-<!-- End of Semester's Creating Dialog Page -->
+
+<!-- / Semester's Creating Dialog Page -->
+
+<!-- Semester's properties Dialog Page -->
+
+<div data-role="page" data-dialog="true" id="sem-properties">
+
+    <div data-role="header">
+        <h1>Opcje semestru</h1>
+    </div>
+
+    <div data-role="main" class="ui-content" id="sem-properties-main"></div>
+</div>
+
+<!-- / Semester's properties Dialog Page -->
 
 <!-- Student's Index Page -->
-<div data-role="page" id="students">
 
+<div data-role="page" id="students">
     {% include "app/include/header.html" %}
     <div data-role="main" class="ui-content" id="students-main"></div>
     {% include "app/include/footer.html" %}
-
 </div>
-<!-- End of Student's Index Page -->
+
+<!-- / Student's Index Page -->
 
 <!-- Student's Details Page -->
+
 <div data-role="page" id="student-details">
-
     {% include "app/include/header.html" %}
-
     <div data-role="main" class="ui-content" id="student-details-main"></div>
-
     {% include "app/include/footer.html" %}
-
 </div>
-<!-- End of Student's Details Page -->
+
+<!-- / Student's Details Page -->
 
 <!-- Student's Creating Dialog Page -->
+
 <div data-role="page" data-dialog="true" id="new-student">
 
     <div data-role="header">
@@ -115,5 +132,7 @@
     </script>
 
 </div>
-<!-- End of Student's Creating Dialog Page -->
+
+<!-- / Student's Creating Dialog Page -->
+
 {% endblock content %}

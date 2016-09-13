@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^home/$', views.home, name='home'),
 
     url(r'^semesters/$', views.semesters, name='semesters'),
+    url(r'^semesters/properties/$', views.semester_properties, name='semester_properties'),
     url(r'^semesters/create/$', views.create_semester, name='create_semester'),
 
     url(r'^students/$', views.students, name='students'),

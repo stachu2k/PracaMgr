@@ -22,7 +22,7 @@ SEM_CHOICES = (
 
 
 class Semester(models.Model):
-    name = models.CharField(max_length=8)
+    name = models.CharField(max_length=8, unique=True)
     sem_type = models.CharField(max_length=1, choices=SEM_CHOICES, default=ZIMOWY)
     start_date = models.DateField()
     end_date = models.DateField()

@@ -1,6 +1,7 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.db import transaction, IntegrityError
 from django.views.decorators.csrf import ensure_csrf_cookie
 import json
 from .models import *
@@ -22,6 +23,7 @@ def semesters(request):
         response = []
         for semester in semesters:
             semester_json = {}
+            semester_json['id'] = semester.id
             semester_json['name'] = semester.name
             semester_json['start_date'] = semester.start_date.strftime('%d.%m.%Y')
             semester_json['end_date'] = semester.end_date.strftime('%d.%m.%Y')
@@ -37,6 +39,7 @@ def semesters(request):
         raise Http404()
 
 
+@transaction.atomic
 def create_semester(request):
     if request.is_ajax():
         if request.method == 'POST':
@@ -52,10 +55,27 @@ def create_semester(request):
                 sem.sem_type = form.cleaned_data['sem_type']
                 sem.start_date = form.cleaned_data['start_date']
                 sem.end_date = form.cleaned_data['end_date']
-                sem.save()
 
-                response['result'] = 'Utworzono nowy semestr!'
-                response['error'] = False
+                try:
+                    sem.save()
+
+                    response['result'] = 'Utworzono nowy semestr!'
+                    response['error'] = False
+
+                    return HttpResponse(
+                        json.dumps(response),
+                        content_type="application/json"
+                    )
+
+                except IntegrityError:
+                    response['result'] = 'Taki semestr już istnieje!'
+                    response['error'] = True
+
+                    return HttpResponse(
+                        json.dumps(response),
+                        content_type="application/json"
+                    )
+
             else:
                 response['result'] = 'Nie udało się utworzyć semestru! Wprowadzono błędne dane'
                 response['error'] = True
@@ -64,6 +84,21 @@ def create_semester(request):
                 json.dumps(response),
                 content_type="application/json"
             )
+
+    else:
+        raise Http404()
+
+
+def semester_properties(request):
+    if request.is_ajax():
+        sem = Semester.objects.get(pk = request.GET.get("id", 1))
+        response = {}
+        response['name'] = sem.name
+
+        return HttpResponse(
+            json.dumps(response),
+            content_type="application/json"
+        )
 
     else:
         raise Http404()
