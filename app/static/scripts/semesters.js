@@ -3,7 +3,21 @@
  * This file contains script for handling semesters in application.
  */
 
-$(document).on("pageshow", "#semesters", function(){
+$(document).ready(function(){
+    $('#new-semester-form').on("submit", function(event){
+        $('#sem-result-box').html("");
+        event.preventDefault();
+        console.log("form submitted!");
+        addNewSemester();
+    });
+});
+
+$(document).on("pageshow", "#semesters", getSemesters)
+    .on("pagehide", "#semesters", cleanSemestersPage)
+    .on("pagehide", "#new-semester", cleanNewSemesterPage)
+    .on("pagehide", "#sem-properties", cleanSemesterPropertiesPage);
+
+function getSemesters(){
     $.ajax({
         url : "/semesters/",
         type : "GET",
@@ -85,28 +99,11 @@ $(document).on("pageshow", "#semesters", function(){
             $('#semesters-main .loading').remove();
         }
     });
-});
+}
 
-$(document).on("pagehide", "#semesters", function(){
+function cleanSemestersPage() {
     $('#semesters-main *').remove();
-});
-
-$(document).ready(function(){
-    $('#new-semester-form').on("submit", function(event){
-        $('#sem-result-box').html("");
-        event.preventDefault();
-        console.log("form submitted!");
-        addNewSemester();
-    });
-});
-
-$(document).on("pagehide", "#new-semester", function(){
-    $('#sem-result-box').html("");
-});
-
-$(document).on("pagehide", "#sem-properties", function() {
-    $('#sem-properties-main *').remove();
-});
+}
 
 function getSemesterProperties() {
     var semesterId = $(this).attr("data-id");
@@ -132,6 +129,10 @@ function getSemesterProperties() {
             $('#sem-properties-main .loading').remove();
         }
     });
+}
+
+function cleanSemesterPropertiesPage() {
+    $('#sem-properties-main *').remove();
 }
 
 function addNewSemester() {
@@ -167,4 +168,8 @@ function addNewSemester() {
             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
     });
+}
+
+function cleanNewSemesterPage() {
+    $('#sem-result-box').html("");
 }
